@@ -1,4 +1,4 @@
-package com.example.keyless
+package io.mcubed.keyless
 
 import io.flutter.embedding.android.FlutterActivity
 
