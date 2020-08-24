@@ -710,15 +710,17 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
           print(value[0].toString());
           if(value[0]==0){
             //seconds
-            pickervalue.s = 'on'+(value[1]+1).toString();
+            pickervalue.s = 'on'+(value[1]).toString();
             print((value[1]+1).toString());
             print(pickervalue.s);
             print(picker.getSelectedValues());
           }
           else{
             //minutes
+            print('minutes');
+            print(((value[1]+1)*60).toString());
             pickervalue.s = 'on'+((value[1]+1)*60).toString();
-            print(((value[1]+1)+60).toString());
+            print(((value[1]+1)*60).toString());
             print(pickervalue.s);
             print(picker.getSelectedValues());
           }
