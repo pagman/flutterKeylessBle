@@ -698,6 +698,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
     );
   }
   showPicker(BuildContext context) {
+
     Picker picker = Picker(
         adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(PickerData)),
         changeToFirst: false,
@@ -721,7 +722,9 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
             print(pickervalue.s);
             print(picker.getSelectedValues());
           }
-
+          setState(() {
+            _visible = !_visible;
+          });
         }
     );
     picker.show(_scaffoldKey.currentState);
