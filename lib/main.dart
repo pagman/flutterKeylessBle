@@ -392,18 +392,24 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:convert/convert.dart';
 import 'dart:convert';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'PickerData.dart';
+import 'pickervalue.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+String s = "on0";
+
 void main() {
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   runApp(FlutterBlueApp());
   print('-----------------------------------------------------');
-  String s = "on0";
+
   var encoded = ascii.encode(s);
   var value  = hex.encode(encoded);
   print(value);
   print("-----------------------------------------------------");
 }
+
 
 
 class FlutterBlueApp extends StatelessWidget {
@@ -414,7 +420,7 @@ class FlutterBlueApp extends StatelessWidget {
       title: 'Named Routes Demo',
       // Start the app with the "/" named route. In this case, the app starts
       // on the FirstScreen widget.
-      initialRoute: '/',
+      initialRoute: '/second',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => LoginPage(), //ShowDataPage()
@@ -467,11 +473,24 @@ class BluetoothOffScreen extends StatelessWidget {
   }
 }
 
-class FindDevicesScreen extends StatelessWidget {
+class FindDevicesScreen extends StatefulWidget {
+  @override
+  _FindDevicesScreenState createState() => _FindDevicesScreenState();
+}
+
+class _FindDevicesScreenState extends State<FindDevicesScreen> {
+  final double listSpec = 4.0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String stateText;
+  bool _visible = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0.0,
         title: Text('Hellas Digital Keyless Access'),
       ),
       drawer: Drawer(
@@ -495,13 +514,12 @@ class FindDevicesScreen extends StatelessWidget {
               child: ListTile(
                 title: new Center(
                     child: new Text(
-                      "Place Holder",
+                      "picker",
                       style: new TextStyle(
                           fontWeight: FontWeight.w500, fontSize: 15.0),
                     )),
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+                  showPicker(context);
                 },
               ),
             ),
@@ -585,6 +603,7 @@ class FindDevicesScreen extends StatelessWidget {
           ],
         ),
       ),
+
       body: RefreshIndicator(
         onRefresh: () =>
             FlutterBlue.instance.startScan(timeout: Duration(seconds: 4)),
@@ -654,16 +673,61 @@ class FindDevicesScreen extends StatelessWidget {
               backgroundColor: Colors.red,
             );
           } else {
-            return FloatingActionButton(
-                child: Icon(Icons.search),
-                onPressed: () => FlutterBlue.instance
-                    .startScan(timeout: Duration(seconds: 4)));
+            return GestureDetector(
+
+              onLongPress: (){
+                setState(() {
+                  _visible = !_visible;
+                });
+                showPicker(context);
+                },
+              child: Container(
+
+                child: Visibility(
+                  visible: _visible,
+                  child: FloatingActionButton(
+                      child: Icon(Icons.search),
+                      onPressed: () => FlutterBlue.instance
+                          .startScan(timeout: Duration(seconds: 4))),
+                ),
+              ),
+            );
           }
         },
       ),
     );
   }
+  showPicker(BuildContext context) {
+    Picker picker = Picker(
+        adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(PickerData)),
+        changeToFirst: false,
+        textAlign: TextAlign.left,
+        textStyle: const TextStyle(color: Colors.blue),
+        selectedTextStyle: TextStyle(color: Colors.red),
+        columnPadding: const EdgeInsets.all(0.0),
+        onConfirm: (Picker picker, List value) {
+          print(value[0].toString());
+          if(value[0]==0){
+            //seconds
+            pickervalue.s = 'on'+(value[1]+1).toString();
+            print((value[1]+1).toString());
+            print(pickervalue.s);
+            print(picker.getSelectedValues());
+          }
+          else{
+            //minutes
+            pickervalue.s = 'on'+((value[1]+1)*60).toString();
+            print(((value[1]+1)+60).toString());
+            print(pickervalue.s);
+            print(picker.getSelectedValues());
+          }
+
+        }
+    );
+    picker.show(_scaffoldKey.currentState);
+  }
 }
+
 
 class DeviceScreen extends StatefulWidget {
   const DeviceScreen({Key key, this.device}) : super(key: key);
@@ -676,6 +740,7 @@ class DeviceScreen extends StatefulWidget {
 
 class _DeviceScreenState extends State<DeviceScreen> {
   bool isConnected = false;
+  String message  = pickervalue.s;
 
   List<Widget> _buildServiceTiles(List<BluetoothService> services) {
     return services
@@ -688,8 +753,13 @@ class _DeviceScreenState extends State<DeviceScreen> {
             characteristic: c,
             onReadPressed: () => c.read(),
             onWritePressed: () {
-              String on0 = "on0";
-              c.write(utf8.encode(on0));
+              setState(() {
+                message = pickervalue.s;
+              });
+              print('aaaa');
+              print(pickervalue.s);
+              print('aaaa');
+              c.write(utf8.encode(pickervalue.s));
             } ,
             onWritePressed1: () {
               String off0 = "off0";
@@ -875,3 +945,4 @@ class _DeviceScreenState extends State<DeviceScreen> {
     );
   }
 }
+

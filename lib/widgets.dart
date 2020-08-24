@@ -2,8 +2,16 @@
 // All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'pickervalue.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'main.dart';
+import 'PickerData.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+
 
 class ScanResultTile extends StatelessWidget {
   const ScanResultTile({Key key, this.result, this.onTap}) : super(key: key);
@@ -129,7 +137,9 @@ class ServiceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (characteristicTiles.length > 0) {
+
+    print(service.uuid.toString().toUpperCase().substring(4, 8));
+    if (service.uuid.toString().toUpperCase().substring(4, 8) == '0001') {
       return ExpansionTile(
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -156,12 +166,15 @@ class ServiceTile extends StatelessWidget {
 }
 
 class CharacteristicTile extends StatelessWidget {
+
   final BluetoothCharacteristic characteristic;
   final List<DescriptorTile> descriptorTiles;
   final VoidCallback onReadPressed;
   final VoidCallback onWritePressed;
   final VoidCallback onWritePressed1;
   final VoidCallback onNotificationPressed;
+
+
 
   const CharacteristicTile(
       {Key key,
@@ -173,64 +186,89 @@ class CharacteristicTile extends StatelessWidget {
         this.onNotificationPressed})
       : super(key: key);
 
+
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<int>>(
       stream: characteristic.value,
       initialData: characteristic.lastValue,
-      builder: (c, snapshot) {
-        final value = snapshot.data;
-        return ExpansionTile(
-          title: ListTile(
-            title: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Characteristic'),
-                Text(
-                    '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}',
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                        color: Theme.of(context).textTheme.caption.color))
-              ],
-            ),
-            subtitle: Text(value.toString()),
-            contentPadding: EdgeInsets.all(0.0),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+      builder: (c, snapshot)
+    {
+      final value = snapshot.data;
+      return ExpansionTile(
+        title: ListTile(
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.file_download,
-                  color: Theme.of(context).iconTheme.color.withOpacity(0.5),
-                ),
-                onPressed: onReadPressed,
-              ),
-              IconButton(
-                icon: Icon(Icons.file_upload,
-                    color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
-                onPressed: onWritePressed,
-              ),
-              IconButton(
-                icon: Icon(Icons.file_upload,
-                    color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
-                onPressed: onWritePressed1,
-              ),
-              IconButton(
-                icon: Icon(
-                    characteristic.isNotifying
-                        ? Icons.sync_disabled
-                        : Icons.sync,
-                    color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
-                onPressed: onNotificationPressed,
-              )
+              Text('Characteristic'),
+              Text(
+                  '0x${characteristic.uuid.toString().toUpperCase().substring(
+                      4, 8)}',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .body1
+                      .copyWith(
+                      color: Theme
+                          .of(context)
+                          .textTheme
+                          .caption
+                          .color))
             ],
           ),
-          children: descriptorTiles,
-        );
+          subtitle: Text(value.toString()),
+          contentPadding: EdgeInsets.all(0.0),
+        ),
+
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+//              IconButton(
+//                icon: Icon(
+//                  Icons.file_download,
+//                  color: Theme.of(context).iconTheme.color.withOpacity(0.5),
+//                ),
+//                onPressed: onReadPressed,
+//              ),
+            GestureDetector(
+              child: FloatingActionButton(
+                onPressed: onWritePressed1,
+                child: Icon(Icons.navigation),
+                backgroundColor: Colors.red,
+              ),
+              onLongPress: onWritePressed,
+            ),
+            FloatingActionButton(
+              onPressed: onWritePressed,
+              child: Icon(Icons.navigation),
+              backgroundColor: Colors.green,
+            ),
+            FloatingActionButton(
+              onPressed: onNotificationPressed,
+              child: Icon(Icons.sync),
+              backgroundColor: Colors.deepOrangeAccent,
+            )
+//              IconButton(
+//                icon: Icon(
+//                    characteristic.isNotifying
+//                        ? Icons.sync_disabled
+//                        : Icons.sync,
+//                    color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
+//                onPressed: onNotificationPressed,
+//              )
+          ],
+        ),
+        children: descriptorTiles,
+      );
+
+
       },
+
     );
   }
+
 }
 
 class DescriptorTile extends StatelessWidget {
@@ -315,3 +353,4 @@ class AdapterStateTile extends StatelessWidget {
     );
   }
 }
+
