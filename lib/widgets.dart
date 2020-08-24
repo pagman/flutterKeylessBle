@@ -141,6 +141,7 @@ class ServiceTile extends StatelessWidget {
     print(service.uuid.toString().toUpperCase().substring(4, 8));
     if (service.uuid.toString().toUpperCase().substring(4, 8) == '0001') {
       return ExpansionTile(
+        initiallyExpanded: true,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,

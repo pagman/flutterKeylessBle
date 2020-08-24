@@ -1,4 +1,5 @@
 // Copyright 2017, Paul DeMarco.
+// Copyright 2017, Paul DeMarco.
 // All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 //
@@ -627,10 +628,11 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                             BluetoothDeviceState.connected) {
                           return RaisedButton(
                             child: Text('OPEN'),
-                            onPressed: () => Navigator.of(context).push(
+                            onPressed: () {
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        DeviceScreen(device: d))),
+                                        DeviceScreen(device: d)));},
                           );
                         }
                         return Text(snapshot.data.toString());
@@ -806,7 +808,9 @@ class _DeviceScreenState extends State<DeviceScreen> {
 
     Timer.periodic(new Duration(seconds: 1), (timer) {
       FlutterBlue.instance.connectedDevices.then((value) {
+
         if (value.length >= 1 && !isConnected) {
+          widget.device.discoverServices();
           _showNotificationWithNoBadge("${widget.device.name}", "Connected");
           isConnected = true;
         } else if (value.length == 0 && isConnected) {
@@ -917,7 +921,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
                     index: snapshot.data ? 1 : 0,
                     children: <Widget>[
                       IconButton(
-                        icon: Icon(Icons.refresh),
+                        icon: Icon(Icons.sync),
                         onPressed: () => widget.device.discoverServices(),
                       ),
                       IconButton(
