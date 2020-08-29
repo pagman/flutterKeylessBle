@@ -58,7 +58,7 @@
 //  @override
 //  Widget build(BuildContext context) {
 //    return Scaffold(
-//      backgroundColor: Colors.lightBlue,
+//      backgroundColor: Colors.tBlue,
 //      body: Center(
 //        child: Column(
 //          mainAxisSize: MainAxisSize.min,
@@ -417,11 +417,11 @@ class FlutterBlueApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      color: Colors.lightBlue,
-      title: 'Named Routes Demo',
+      color: Color(0xff7FBD32),
+      title: 'Keyless Access',
       // Start the app with the "/" named route. In this case, the app starts
       // on the FirstScreen widget.
-      initialRoute: '/second',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => LoginPage(), //ShowDataPage()
@@ -449,7 +449,7 @@ class BluetoothOffScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Color(0xff7FBD32),
 
       body: Center(
         child: Column(
@@ -492,7 +492,9 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0.0,
-        title: Text('Hellas Digital Keyless Access'),
+        title: Text('Hellas Digital Keyless Access',
+            style: TextStyle(color: Color(0xffE7F7D4))),
+          backgroundColor: Color(0xffB8141F)
       ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -509,7 +511,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                     style: new TextStyle(
                         fontWeight: FontWeight.w500, fontSize: 15.0),
                   )),
-              decoration: new BoxDecoration(color: Colors.lightBlue),
+              decoration: new BoxDecoration(color: Color(0xffB8141F)),
             ),
             Card(
               child: ListTile(
@@ -627,7 +629,8 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                         if (snapshot.data ==
                             BluetoothDeviceState.connected) {
                           return RaisedButton(
-                            child: Text('OPEN'),
+                            color: Color(0xffB8141F),
+                            child: Text('OPEN', style: TextStyle(color: Color(0xffE7F7D4))),
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -672,7 +675,7 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
             return FloatingActionButton(
               child: Icon(Icons.stop),
               onPressed: () => FlutterBlue.instance.stopScan(),
-              backgroundColor: Colors.red,
+              backgroundColor: Color(0xffB8141F),
             );
           } else {
             return GestureDetector(
@@ -688,7 +691,10 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
                 child: Visibility(
                   visible: _visible,
                   child: FloatingActionButton(
-                      child: Icon(Icons.search),
+                      backgroundColor: Color(0xffB8141F),
+                      child: Icon(Icons.search,
+                          color: Color(0xffE7F7D4),
+                      ),
                       onPressed: () => FlutterBlue.instance
                           .startScan(timeout: Duration(seconds: 4))),
                 ),
@@ -705,8 +711,8 @@ class _FindDevicesScreenState extends State<FindDevicesScreen> {
         adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(PickerData)),
         changeToFirst: false,
         textAlign: TextAlign.left,
-        textStyle: const TextStyle(color: Colors.blue),
-        selectedTextStyle: TextStyle(color: Colors.red),
+        textStyle: const TextStyle(color: Colors.blue , fontSize: 17.0),
+        selectedTextStyle: TextStyle(color: Colors.red, fontSize: 17.0),
         columnPadding: const EdgeInsets.all(0.0),
         onConfirm: (Picker picker, List value) {
           print(value[0].toString());
@@ -866,7 +872,9 @@ class _DeviceScreenState extends State<DeviceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.device.name),
+        title: Text(widget.device.name,
+            style: TextStyle(color: Color(0xffE7F7D4))),
+        backgroundColor: Color(0xffB8141F),
         actions: <Widget>[
           StreamBuilder<BluetoothDeviceState>(
             stream: widget.device.state,

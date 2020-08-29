@@ -236,20 +236,23 @@ class CharacteristicTile extends StatelessWidget {
             GestureDetector(
               child: FloatingActionButton(
                 onPressed: onWritePressed1,
-                child: Icon(Icons.navigation),
-                backgroundColor: Colors.red,
+                child: Icon(Icons.navigation,
+                  color: Color(0xff34090C),),
+                backgroundColor: Color(0xffB8141F),
               ),
               onLongPress: onWritePressed,
             ),
             FloatingActionButton(
               onPressed: onWritePressed,
-              child: Icon(Icons.navigation),
-              backgroundColor: Colors.green,
+              child: Icon(Icons.navigation,
+                color: Color(0xff34090C),),
+              backgroundColor: Color(0xff7FBD32),
             ),
             FloatingActionButton(
               onPressed: onNotificationPressed,
-              child: Icon(Icons.sync),
-              backgroundColor: Colors.deepOrangeAccent,
+              child: Icon(Icons.sync,
+                color: Color(0xff34090C),),
+              backgroundColor: Color(0xffE7F7D4,),
             )
 //              IconButton(
 //                icon: Icon(
